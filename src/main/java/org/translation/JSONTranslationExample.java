@@ -35,6 +35,7 @@ public class JSONTranslationExample {
      * Returns the Spanish translation of Canada.
      * @return the Spanish translation of Canada
      */
+
     public String getCanadaCountryNameSpanishTranslation() {
         JSONObject canada = jsonArray.getJSONObject(CANADA_INDEX);
         return canada.getString("es");
