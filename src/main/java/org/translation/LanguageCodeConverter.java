@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import java.util.Map;
  */
 public class LanguageCodeConverter {
 
+    private Map<String, List<String>> languagesCodes = new HashMap<>();
+    private Map<String, String> reverseMap = new HashMap<>();
     // TODO Task: pick appropriate instance variables to store the data necessary for this class
 
     /**
@@ -28,6 +31,7 @@ public class LanguageCodeConverter {
      * @param filename the name of the file in the resources folder to load the data from
      * @throws RuntimeException if the resource file can't be loaded properly
      */
+    @SuppressWarnings("checkstyle:WhitespaceAround")
     public LanguageCodeConverter(String filename) {
 
         try {
@@ -36,6 +40,22 @@ public class LanguageCodeConverter {
 
             // TODO Task: use lines to populate the instance variable
             //           tip: you might find it convenient to create an iterator using lines.iterator()
+            for (int i = 0; i < lines.size(); i++) {
+                String hold = lines.get(i);
+                int index = hold.indexOf('\t');
+                if (index != -1) {
+                    String first = hold.substring(0, index);
+                    String end = hold.substring(index + 1);
+
+                    List<String> names = Arrays.asList(first.split(",\\s*"));
+                    languagesCodes.put(end.trim(), names);
+
+                    for (String name: names){
+                        reverseMap.put(name.trim(), end.trim());
+                    }
+                }
+
+            }
 
         }
         catch (IOException | URISyntaxException ex) {
@@ -43,6 +63,11 @@ public class LanguageCodeConverter {
         }
 
     }
+    public static void main(String[] args) {
+        // Create an instance and pass the filename
+        new LanguageCodeConverter("language-codes.txt");
+    }
+
 
     /**
      * Returns the name of the language for the given language code.
@@ -51,7 +76,7 @@ public class LanguageCodeConverter {
      */
     public String fromLanguageCode(String code) {
         // TODO Task: update this code to use your instance variable to return the correct value
-        return code;
+        return null;
     }
 
     /**
@@ -61,7 +86,7 @@ public class LanguageCodeConverter {
      */
     public String fromLanguage(String language) {
         // TODO Task: update this code to use your instance variable to return the correct value
-        return language;
+        return reverseMap.get(language);
     }
 
     /**
@@ -70,6 +95,6 @@ public class LanguageCodeConverter {
      */
     public int getNumLanguages() {
         // TODO Task: update this code to use your instance variable to return the correct value
-        return 0;
+        return reverseMap.size();
     }
 }
