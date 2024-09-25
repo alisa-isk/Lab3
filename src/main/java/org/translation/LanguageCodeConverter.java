@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * This class provides the service of converting language codes to their names.
  */
@@ -17,6 +16,7 @@ public class LanguageCodeConverter {
 
     private Map<String, List<String>> languagesCodes = new HashMap<>();
     private Map<String, String> reverseMap = new HashMap<>();
+    // TODO Task: pick appropriate instance variables to store the data necessary for this class
 
     /**
      * Default constructor which will load the language codes from "language-codes.txt"
@@ -31,53 +31,36 @@ public class LanguageCodeConverter {
      * @param filename the name of the file in the resources folder to load the data from
      * @throws RuntimeException if the resource file can't be loaded properly
      */
+    @SuppressWarnings("checkstyle:WhitespaceAround")
     public LanguageCodeConverter(String filename) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
 
-            for (int i = 1; i < lines.size(); i++) {
-                String line = lines.get(i).trim();
-                if (line.isEmpty()) continue;
+            // TODO Task: use lines to populate the instance variable
+            //           tip: you might find it convenient to create an iterator using lines.iterator()
+            for (int i = 0; i < lines.size(); i++) {
+                String hold = lines.get(i);
+                int index = hold.indexOf('\t');
+                if (index != -1) {
+                    String first = hold.substring(0, index);
+                    String end = hold.substring(index + 1);
 
-                String[] parts = line.split("\\s+");
-                if (parts.length >= 2) {
-                    String languageNames = parts[0].trim();
-                    String languageCode = parts[1].trim();
+                    List<String> names = Arrays.asList(first.split(",\\s*"));
+                    languagesCodes.put(end.trim(), names);
 
-                    // Handle possible malformed entries
-                    if (languageNames.contains(",=") || languageNames.contains("=(")) {
-                        System.err.println("Malformed entry detected: " + line);
-                        continue; // Skip malformed entries
+                    for (String name: names){
+                        reverseMap.put(name.trim(), end.trim());
                     }
-
-                    // Store in languagesCodes
-                    List<String> names = Arrays.asList(languageNames.split(",\\s*"));
-                    languagesCodes.put(languageCode, names);
-
-                    // Store in reverseMap
-                    for (String name : names) {
-                        name = name.trim(); // Clean up whitespace
-                        reverseMap.put(name, languageCode); // Overwrite if duplicate
-                    }
-
-                    // Debugging output
-                    System.out.println("Languages Codes: " + languagesCodes);
-                    System.out.println("Reverse Map: " + reverseMap);
-                    System.out.println("Number of Languages in languagesCodes: " + languagesCodes.size());
-                    System.out.println("Number of Languages in reverseMap: " + reverseMap.size());
-                } else {
-                    System.err.println("Not enough parts in line: " + line);
                 }
+
             }
-        } catch (IOException | URISyntaxException ex) {
+
+        }
+        catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
-    }
 
-    public static void main(String[] args) {
-        // Create an instance and pass the filename
-        new LanguageCodeConverter("language-codes.txt");
     }
 
     /**
@@ -86,6 +69,7 @@ public class LanguageCodeConverter {
      * @return the name of the language corresponding to the code
      */
     public String fromLanguageCode(String code) {
+        // TODO Task: update this code to use your instance variable to return the correct value
         List<String> names = languagesCodes.get(code);
         if (names != null && !names.isEmpty()) {
             return names.get(0);
@@ -99,6 +83,7 @@ public class LanguageCodeConverter {
      * @return the 2-letter code of the language
      */
     public String fromLanguage(String language) {
+        // TODO Task: update this code to use your instance variable to return the correct value
         return reverseMap.get(language);
     }
 
@@ -107,6 +92,7 @@ public class LanguageCodeConverter {
      * @return how many languages are included in this code converter.
      */
     public int getNumLanguages() {
-        return reverseMap.size();
+        // TODO Task: update this code to use your instance variable to return the correct value
+        return languagesCodes.size();
     }
 }

@@ -44,7 +44,8 @@ public class CountryCodeConverter {
                     reverseMap.put(alpha3Code, countryName);
                 }
             }
-        } catch (IOException | URISyntaxException ex) {
+        }
+        catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -73,11 +74,5 @@ public class CountryCodeConverter {
      */
     public int getNumCountries() {
         return reverseMap.size();
-    }
-
-    public static void main(String[] args) {
-        CountryCodeConverter converter = new CountryCodeConverter();
-        // Example usage
-        System.out.println(converter.fromCountryCode("USA")); // Should print "United States of America (the)"
     }
 }
