@@ -62,11 +62,6 @@ public class LanguageCodeConverter {
         }
 
     }
-    public static void main(String[] args) {
-        // Create an instance and pass the filename
-        new LanguageCodeConverter("language-codes.txt");
-    }
-
 
     /**
      * Returns the name of the language for the given language code.
@@ -98,6 +93,6 @@ public class LanguageCodeConverter {
      */
     public int getNumLanguages() {
         // TODO Task: update this code to use your instance variable to return the correct value
-        return reverseMap.size();
+        return languagesCodes.size();
     }
 }
