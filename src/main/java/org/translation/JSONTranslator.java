@@ -16,7 +16,20 @@ import org.json.JSONObject;
  */
 public class JSONTranslator implements Translator {
 
-    private List<List<Object>> countryDataList;
+    // Define a class to hold the country data
+    private static class CountryData {
+        String countryCode;
+        List<String> languageCodes;
+        List<String> countryNames;
+
+        CountryData(String countryCode, List<String> languageCodes, List<String> countryNames) {
+            this.countryCode = countryCode;
+            this.languageCodes = languageCodes;
+            this.countryNames = countryNames;
+        }
+    }
+
+    private List<CountryData> countryDataList;
     private List<String> countryCodes;
 
     /**
@@ -41,42 +54,38 @@ public class JSONTranslator implements Translator {
             JSONArray jsonArray = new JSONArray(jsonString);
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject hold = jsonArray.getJSONObject(i);
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                List<Object> countryData = new ArrayList<>();
-
-                String countryCode = hold.getString("alpha3");
+                // Get the country code
+                String countryCode = jsonObject.getString("alpha3");
                 countryCodes.add(countryCode);
-                countryData.add(countryCode);
 
+                // Create lists for language codes and country names
                 List<String> languageCodes = new ArrayList<>();
                 List<String> countryNames = new ArrayList<>();
 
-                for (String key : hold.keySet()) {
+                // Iterate over the JSON object to get language codes and country names
+                for (String key : jsonObject.keySet()) {
                     if (!"id".equals(key) && !"alpha2".equals(key) && !"alpha3".equals(key)) {
                         languageCodes.add(key);
-                        countryNames.add(hold.getString(key));
+                        countryNames.add(jsonObject.getString(key));
                     }
                 }
 
-                countryData.add(languageCodes);
-                countryData.add(countryNames);
-
-                countryDataList.add(countryData);
+                // Add the country data to the list
+                countryDataList.add(new CountryData(countryCode, languageCodes, countryNames));
             }
-        }
-        catch (IOException | URISyntaxException ex) {
+
+        } catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     @Override
     public List<String> getCountryLanguages(String country) {
-        for (List<Object> countryData : countryDataList) {
-            String countryCode = (String) countryData.get(0);
-            if (countryCode.equalsIgnoreCase(country)) {
-                List<String> languageCodes = (List<String>) countryData.get(1);
-                return new ArrayList<>(languageCodes);
+        for (CountryData countryData : countryDataList) {
+            if (countryData.countryCode.equalsIgnoreCase(country)) {
+                return new ArrayList<>(countryData.languageCodes);  // Return a copy to avoid aliasing
             }
         }
         return new ArrayList<>();
@@ -84,23 +93,19 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountries() {
-        return new ArrayList<>(countryCodes);
+        return new ArrayList<>(countryCodes);  // Return a copy to avoid aliasing
     }
 
     @Override
     public String translate(String country, String language) {
-        for (List<Object> countryData : countryDataList) {
-            String countryCode = (String) countryData.get(0);
-            if (countryCode.equalsIgnoreCase(country)) {
-                List<String> languageCodes = (List<String>) countryData.get(1);
-                List<String> countryNames = (List<String>) countryData.get(2);
-
-                int index = languageCodes.indexOf(language);
+        for (CountryData countryData : countryDataList) {
+            if (countryData.countryCode.equalsIgnoreCase(country)) {
+                int index = countryData.languageCodes.indexOf(language);
                 if (index != -1) {
-                    return countryNames.get(index);
+                    return countryData.countryNames.get(index);
                 }
             }
         }
-        return null;
+        return null;  // Return null if the country or language is not found
     }
 }
