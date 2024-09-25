@@ -87,7 +87,7 @@ public class JSONTranslator implements Translator {
         //            but make sure there is no aliasing to a mutable object
         for (List<Object> countryData : countryDataList) {
             String countryCode = (String) countryData.get(0);
-            if ((countryCode.toUpperCase()).equals(country)) {
+            if (countryCode.equalsIgnoreCase(country)) {
                 List<String> languageCodes = (List<String>) countryData.get(1);
                 return new ArrayList<>(languageCodes);
             }
@@ -107,7 +107,7 @@ public class JSONTranslator implements Translator {
         // TODO Task: complete this method using your instance variables as needed
         for (List<Object> countryData : countryDataList) {
             String countryCode = (String) countryData.get(0);
-            if ((countryCode.toUpperCase()).equals(country)) {
+            if (countryCode.equalsIgnoreCase(country)) {
                 // Get the list of language codes and country names
                 List<String> languageCodes = (List<String>) countryData.get(1);
                 List<String> countryNames = (List<String>) countryData.get(2);
