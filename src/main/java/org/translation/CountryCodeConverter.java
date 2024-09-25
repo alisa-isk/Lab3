@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import java.util.Map;
  * This class provides the service of converting country codes to their names.
  */
 public class CountryCodeConverter {
+    private static final int MIN_PARTS_LENGTH = 4;
     private final Map<String, String> countryCode = new HashMap<>();
     private final Map<String, String> reverseMap = new HashMap<>();
 
@@ -31,12 +31,17 @@ public class CountryCodeConverter {
      */
     public CountryCodeConverter(String filename) {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(getClass()
-                    .getClassLoader().getResource(filename).toURI()));
+            var resource = getClass().getClassLoader().getResource(filename);
+
+            if (resource == null) {
+                throw new RuntimeException("Resource not found: " + filename);
+            }
+
+            List<String> lines = Files.readAllLines(Paths.get(resource.toURI()));
             for (int i = 1; i < lines.size(); i++) {
                 String line = lines.get(i);
                 String[] parts = line.split("\t");
-                if (parts.length >= 4) {
+                if (parts.length >= MIN_PARTS_LENGTH) {
                     String countryName = parts[0].trim();
                     String alpha3Code = parts[2].trim();
 

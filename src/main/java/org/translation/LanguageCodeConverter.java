@@ -14,9 +14,10 @@ import java.util.Map;
  */
 public class LanguageCodeConverter {
 
-    private Map<String, List<String>> languagesCodes = new HashMap<>();
-    private Map<String, String> reverseMap = new HashMap<>();
+    private final Map<String, List<String>> languagesCodes = new HashMap<>();
+    private final Map<String, String> reverseMap = new HashMap<>();
 
+    // Add an empty line before the constructor
     /**
      * Default constructor which will load the language codes from "language-codes.txt"
      * in the resources folder.
@@ -24,12 +25,13 @@ public class LanguageCodeConverter {
     public LanguageCodeConverter() {
         this("language-codes.txt");
     }
+
+    // Add an empty line before the overloaded constructor
     /**
      * Overloaded constructor which allows us to specify the filename to load the language code data from.
      * @param filename the name of the file in the resources folder to load the data from
      * @throws RuntimeException if the resource file can't be loaded properly
      */
-    @SuppressWarnings("checkstyle:WhitespaceAround")
     public LanguageCodeConverter(String filename) {
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
@@ -44,18 +46,15 @@ public class LanguageCodeConverter {
                     List<String> names = Arrays.asList(first.split(",\\s*"));
                     languagesCodes.put(end.trim(), names);
 
-                    for (String name: names){
+                    for (String name : names) {
                         reverseMap.put(name.trim(), end.trim());
                     }
                 }
-
             }
-
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
-
     }
 
     /**

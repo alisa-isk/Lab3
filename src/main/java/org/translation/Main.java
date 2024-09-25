@@ -16,6 +16,7 @@ import java.util.Scanner;
  */
 public class Main {
     private static final String QUIT = "quit";
+
     /**
      * This is the main entry point of our Translation System!<br/>
      * A class implementing the Translator interface is created and passed into a call to runProgram.
@@ -23,7 +24,6 @@ public class Main {
      */
     public static void main(String[] args) {
         Translator translator = new JSONTranslator();
-
         runProgram(translator);
     }
 
@@ -59,6 +59,7 @@ public class Main {
     }
 
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
+
     private static String promptForCountry(Translator translator) {
         List<String> countries = translator.getCountries();
         CountryCodeConverter names = new CountryCodeConverter();
@@ -76,13 +77,12 @@ public class Main {
         System.out.println("select a country from above:");
         Scanner s = new Scanner(System.in);
         return s.nextLine();
-
     }
 
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
+
     private static String promptForLanguage(Translator translator, String country) {
         List<String> hold = translator.getCountryLanguages(country);
-
         LanguageCodeConverter names = new LanguageCodeConverter();
         List<String> hold1 = new ArrayList<>();
         for (int i = 0; i < hold.size(); i++) {

@@ -15,68 +15,35 @@ import org.json.JSONObject;
  * data from a JSON file. The data is read in once each time an instance of this class is constructed.
  */
 public class JSONTranslator implements Translator {
+    private final List<CountryData> countryDataList;
+    private final List<String> countryCodes;
 
-    // Define a class to hold the country data
-    private static class CountryData {
-        String countryCode;
-        List<String> languageCodes;
-        List<String> countryNames;
-
-        CountryData(String countryCode, List<String> languageCodes, List<String> countryNames) {
-            this.countryCode = countryCode;
-            this.languageCodes = languageCodes;
-            this.countryNames = countryNames;
-        }
-    }
-
-    private List<CountryData> countryDataList;
-    private List<String> countryCodes;
-
-    /**
-     * Constructs a JSONTranslator using data from the sample.json resources file.
-     */
     public JSONTranslator() {
         this("sample.json");
     }
 
-    /**
-     * Constructs a JSONTranslator populated using data from the specified resources file.
-     * @param filename the name of the file in resources to load the data from
-     * @throws RuntimeException if the resource file can't be loaded properly
-     */
     public JSONTranslator(String filename) {
         countryDataList = new ArrayList<>();
         countryCodes = new ArrayList<>();
         try {
-
             String jsonString = Files.readString(Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
-
             JSONArray jsonArray = new JSONArray(jsonString);
-
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                // Get the country code
                 String countryCode = jsonObject.getString("alpha3");
                 countryCodes.add(countryCode);
-
-                // Create lists for language codes and country names
                 List<String> languageCodes = new ArrayList<>();
                 List<String> countryNames = new ArrayList<>();
-
-                // Iterate over the JSON object to get language codes and country names
                 for (String key : jsonObject.keySet()) {
                     if (!"id".equals(key) && !"alpha2".equals(key) && !"alpha3".equals(key)) {
                         languageCodes.add(key);
                         countryNames.add(jsonObject.getString(key));
                     }
                 }
-
-                // Add the country data to the list
                 countryDataList.add(new CountryData(countryCode, languageCodes, countryNames));
             }
-
-        } catch (IOException | URISyntaxException ex) {
+        }
+        catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -84,8 +51,8 @@ public class JSONTranslator implements Translator {
     @Override
     public List<String> getCountryLanguages(String country) {
         for (CountryData countryData : countryDataList) {
-            if (countryData.countryCode.equalsIgnoreCase(country)) {
-                return new ArrayList<>(countryData.languageCodes);  // Return a copy to avoid aliasing
+            if (countryData.getCountryCode().equalsIgnoreCase(country)) {
+                return new ArrayList<>(countryData.getLanguageCodes());
             }
         }
         return new ArrayList<>();
@@ -93,19 +60,50 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountries() {
-        return new ArrayList<>(countryCodes);  // Return a copy to avoid aliasing
+        return new ArrayList<>(countryCodes);
     }
 
+    /**
+     * Translates the given country name to the specified language.
+     *
+     * @param country the country code for the country to be translated
+     * @param language the language code for the language to translate to
+     * @return the name of the country in the specified language, or null if the translation is not found
+     */
     @Override
     public String translate(String country, String language) {
         for (CountryData countryData : countryDataList) {
-            if (countryData.countryCode.equalsIgnoreCase(country)) {
-                int index = countryData.languageCodes.indexOf(language);
+            if (countryData.getCountryCode().equalsIgnoreCase(country)) {
+                int index = countryData.getLanguageCodes().indexOf(language);
                 if (index != -1) {
-                    return countryData.countryNames.get(index);
+                    return countryData.getCountryNames().get(index);
                 }
             }
         }
-        return null;  // Return null if the country or language is not found
+        return null;
+    }
+
+    private static class CountryData {
+        private final String countryCode;
+        private final List<String> languageCodes;
+        private final List<String> countryNames;
+
+        CountryData(String countryCode, List<String> languageCodes, List<String> countryNames) {
+            this.countryCode = countryCode;
+            this.languageCodes = languageCodes;
+            this.countryNames = countryNames;
+        }
+
+        public String getCountryCode() {
+            return countryCode;
+        }
+
+        public List<String> getLanguageCodes() {
+            return new ArrayList<>(languageCodes);
+        }
+
+        public List<String> getCountryNames() {
+            return new ArrayList<>(countryNames);
+        }
     }
 }

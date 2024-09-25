@@ -55,9 +55,11 @@ public class InLabByHandTranslator implements Translator {
 
         if ("de".equals(language)) {
             translation = "Kanada";
-        } else if ("en".equals(language) || "es".equals(language) || "it".equals(language)) {
+        }
+        else if ("en".equals(language) || "es".equals(language) || "it".equals(language)) {
             translation = "Canada";
-        } else if ("zh".equals(language)) {
+        }
+        else if ("zh".equals(language)) {
             translation = "加拿大";
         }
 
