@@ -33,7 +33,6 @@ public class LanguageCodeConverter {
      */
     @SuppressWarnings("checkstyle:WhitespaceAround")
     public LanguageCodeConverter(String filename) {
-
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));

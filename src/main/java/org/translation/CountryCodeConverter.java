@@ -13,8 +13,9 @@ import java.util.Map;
  * This class provides the service of converting country codes to their names.
  */
 public class CountryCodeConverter {
-    private Map<String, String> countryCode = new HashMap<>();
-    private Map<String, String> reverseMap = new HashMap<>();
+    private final Map<String, String> countryCode = new HashMap<>();
+    private final Map<String, String> reverseMap = new HashMap<>();
+
     /**
      * Default constructor which will load the country codes from "country-codes.txt"
      * in the resources folder.
@@ -29,29 +30,23 @@ public class CountryCodeConverter {
      * @throws RuntimeException if the resource file can't be loaded properly
      */
     public CountryCodeConverter(String filename) {
-
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
             for (int i = 1; i < lines.size(); i++) {
                 String line = lines.get(i);
-                int index = line.indexOf('\t');
-                int index1 = line.indexOf('\t', index + 1);
-                int index2 = line.indexOf('\t', index1 + 1);
-                if (index != -1) {
-                    String first = line.substring(0, index);
-                    String second = line.substring(index1, index2);
+                String[] parts = line.split("\t");
+                if (parts.length >= 4) {
+                    String countryName = parts[0].trim();
+                    String alpha3Code = parts[2].trim();
 
-                    countryCode.put(first.trim(), second.trim());
-                    reverseMap.put(second.trim(), first.trim());
+                    countryCode.put(countryName, alpha3Code);
+                    reverseMap.put(alpha3Code, countryName);
                 }
             }
-
-        }
-        catch (IOException | URISyntaxException ex) {
+        } catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
-
     }
 
     /**
@@ -60,8 +55,7 @@ public class CountryCodeConverter {
      * @return the name of the country corresponding to the code
      */
     public String fromCountryCode(String code) {
-        String countryName = reverseMap.get(code);
-        return countryName;
+        return reverseMap.get(code.toUpperCase());
     }
 
     /**
@@ -69,11 +63,8 @@ public class CountryCodeConverter {
      * @param country the name of the country
      * @return the 3-letter code of the country
      */
-
-    // We are assuming that countries will be entered as we are given for example "Niger (the)"
     public String fromCountry(String country) {
-        String countryName = countryCode.get(country);
-        return countryName;
+        return countryCode.get(country);
     }
 
     /**
@@ -82,5 +73,11 @@ public class CountryCodeConverter {
      */
     public int getNumCountries() {
         return reverseMap.size();
+    }
+
+    public static void main(String[] args) {
+        CountryCodeConverter converter = new CountryCodeConverter();
+        // Example usage
+        System.out.println(converter.fromCountryCode("USA")); // Should print "United States of America (the)"
     }
 }

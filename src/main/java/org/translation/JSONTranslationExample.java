@@ -35,11 +35,11 @@ public class JSONTranslationExample {
      * Returns the Spanish translation of Canada.
      * @return the Spanish translation of Canada
      */
-
     public String getCanadaCountryNameSpanishTranslation() {
         JSONObject canada = jsonArray.getJSONObject(CANADA_INDEX);
         return canada.getString("es");
     }
+
     /**
      * Returns the name of the country based on the provided country and language codes.
      * @param countryCode the country, as its three-letter code.
@@ -49,8 +49,8 @@ public class JSONTranslationExample {
     public String getCountryNameTranslation(String countryCode, String languageCode) {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            if (jsonObject.getString("es").equals(countryCode) && jsonObject.getString("es").equals(languageCode)) {
-                return jsonObject.getString("name");
+            if (jsonObject.getString("alpha3").equals(countryCode) && jsonObject.has(languageCode)) {
+                return jsonObject.getString(languageCode);
             }
         }
         return "Country not found";
