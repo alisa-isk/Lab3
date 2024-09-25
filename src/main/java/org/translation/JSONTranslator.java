@@ -48,6 +48,12 @@ public class JSONTranslator implements Translator {
         }
     }
 
+    /**
+     * Returns the list of languages spoken in the specified country.
+     *
+     * @param country the country code for which to get languages
+     * @return the list of languages spoken in the country, or null if the country is not found
+     */
     @Override
     public List<String> getCountryLanguages(String country) {
         for (CountryData countryData : countryDataList) {
@@ -55,7 +61,7 @@ public class JSONTranslator implements Translator {
                 return new ArrayList<>(countryData.getLanguageCodes());
             }
         }
-        return new ArrayList<>();
+        return null;
     }
 
     @Override
@@ -66,7 +72,7 @@ public class JSONTranslator implements Translator {
     /**
      * Translates the given country name to the specified language.
      *
-     * @param country the country code for the country to be translated
+     * @param country  the country code for the country to be translated
      * @param language the language code for the language to translate to
      * @return the name of the country in the specified language, or null if the translation is not found
      */
@@ -88,6 +94,13 @@ public class JSONTranslator implements Translator {
         private final List<String> languageCodes;
         private final List<String> countryNames;
 
+        /**
+         * Constructs a CountryData instance with the specified parameters.
+         *
+         * @param countryCode   the country code (may be null)
+         * @param languageCodes the list of language codes (may be null)
+         * @param countryNames  the list of country names (may be null)
+         */
         CountryData(String countryCode, List<String> languageCodes, List<String> countryNames) {
             this.countryCode = countryCode;
             this.languageCodes = languageCodes;
@@ -107,3 +120,4 @@ public class JSONTranslator implements Translator {
         }
     }
 }
+
