@@ -1,5 +1,7 @@
 package org.translation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,7 +46,9 @@ public class Main {
             // TODO Task: Once you switch promptForCountry so that it returns the country
             //            name rather than the 3-letter country code, you will need to
             //            convert it back to its 3-letter country code when calling promptForLanguage
-            String language = promptForLanguage(translator, country);
+            CountryCodeConverter converter = new CountryCodeConverter();
+            String insert = converter.fromCountry(country);
+            String language = promptForLanguage(translator, insert);
             if (QUIT.equals(language)) {
                 break;
             }
@@ -53,7 +57,9 @@ public class Main {
             //            convert it back to its 2-letter language code when calling translate.
             //            Note: you should use the actual names in the message printed below though,
             //            since the user will see the displayed message.
-            System.out.println(country + " in " + language + " is " + translator.translate(country, language));
+            LanguageCodeConverter names = new LanguageCodeConverter();
+            String codes1 = names.fromLanguage(language);
+            System.out.println(country + " in " + language + " is " + translator.translate(insert, codes1));
             System.out.println("Press enter to continue or quit to exit.");
             Scanner s = new Scanner(System.in);
             String textTyped = s.nextLine();
@@ -71,10 +77,20 @@ public class Main {
         //            and print them out; one per line
         //      hint: class Collections provides a static sort method
         // TODO Task: convert the country codes to the actual country names before sorting
-        System.out.println(countries);
+
+        CountryCodeConverter names = new CountryCodeConverter();
+        List<String> countryNames = new ArrayList<>();
+        for (int i = 0; i < countries.size(); i++) {
+            String country = countries.get(i);
+            String hold1 = names.fromCountryCode(country.toUpperCase());
+            countryNames.add(hold1);
+        }
+        Collections.sort(countryNames);
+        for (String countryName : countryNames) {
+            System.out.println(countryName);
+        }
 
         System.out.println("select a country from above:");
-
         Scanner s = new Scanner(System.in);
         return s.nextLine();
 
@@ -82,11 +98,22 @@ public class Main {
 
     // Note: CheckStyle is configured so that we don't need javadoc for private methods
     private static String promptForLanguage(Translator translator, String country) {
-
         // TODO Task: replace the line below so that we sort the languages alphabetically and print them out; one per line
         // TODO Task: convert the language codes to the actual language names before sorting
-        System.out.println(translator.getCountryLanguages(country));
 
+        List<String> hold = translator.getCountryLanguages(country);
+
+        LanguageCodeConverter names = new LanguageCodeConverter();
+        List<String> hold1 = new ArrayList<>();
+        for (int i = 0; i < hold.size(); i++) {
+            String lang = names.fromLanguageCode(hold.get(i));
+            hold1.add(lang);
+        }
+        Collections.sort(hold1);
+        for (int i = 0; i < hold1.size(); i++) {
+            String lang1 = hold1.get(i);
+            System.out.println(lang1);
+        }
         System.out.println("select a language from above:");
 
         Scanner s = new Scanner(System.in);

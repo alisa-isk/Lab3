@@ -49,7 +49,7 @@ public class JSONTranslator implements Translator {
                 List<Object> countryData = new ArrayList<>();
 
                 // Get the country code
-                String countryCode = hold.getString("alpha2");
+                String countryCode = hold.getString("alpha3");
                 countryCodes.add(countryCode);
                 countryData.add(countryCode);
 
@@ -72,7 +72,6 @@ public class JSONTranslator implements Translator {
                 // Add the complete countryCodes list to the countryDataList
                 countryDataList.add(countryData);
             }
-
             // TODO Task: use the data in the jsonArray to populate your instance variables
             //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
         }
@@ -88,7 +87,7 @@ public class JSONTranslator implements Translator {
         //            but make sure there is no aliasing to a mutable object
         for (List<Object> countryData : countryDataList) {
             String countryCode = (String) countryData.get(0);
-            if (countryCode.equals(country)) {
+            if ((countryCode.toUpperCase()).equals(country)) {
                 List<String> languageCodes = (List<String>) countryData.get(1);
                 return new ArrayList<>(languageCodes);
             }
@@ -100,7 +99,6 @@ public class JSONTranslator implements Translator {
     public List<String> getCountries() {
         // TODO Task: return an appropriate list of country codes,
         //            but make sure there is no aliasing to a mutable object
-
         return countryCodes;
     }
 
@@ -109,8 +107,7 @@ public class JSONTranslator implements Translator {
         // TODO Task: complete this method using your instance variables as needed
         for (List<Object> countryData : countryDataList) {
             String countryCode = (String) countryData.get(0);
-
-            if (countryCode.equals(country)) {
+            if ((countryCode.toUpperCase()).equals(country)) {
                 // Get the list of language codes and country names
                 List<String> languageCodes = (List<String>) countryData.get(1);
                 List<String> countryNames = (List<String>) countryData.get(2);

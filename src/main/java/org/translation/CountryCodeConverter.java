@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,8 @@ import java.util.Map;
  * This class provides the service of converting country codes to their names.
  */
 public class CountryCodeConverter {
-    private String codeName;
-    private String countryName;
-    private int numCountries;
+    private Map<String, String> countryCode = new HashMap<>();
+    private Map<String, String> reverseMap = new HashMap<>();
     /**
      * Default constructor which will load the country codes from "country-codes.txt"
      * in the resources folder.
@@ -33,7 +33,20 @@ public class CountryCodeConverter {
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
-            this.codeName = lines.get(0);
+            for (int i = 1; i < lines.size(); i++) {
+                String line = lines.get(i);
+                int index = line.indexOf('\t');
+                int index1 = line.indexOf('\t', index + 1);
+                int index2 = line.indexOf('\t', index1 + 1);
+                if (index != -1) {
+                    String first = line.substring(0, index);
+                    String second = line.substring(index1, index2);
+
+                    countryCode.put(first.trim(), second.trim());
+                    reverseMap.put(second.trim(), first.trim());
+                }
+            }
+
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -47,8 +60,8 @@ public class CountryCodeConverter {
      * @return the name of the country corresponding to the code
      */
     public String fromCountryCode(String code) {
-        this.codeName = code;
-        return code;
+        String countryName = reverseMap.get(code);
+        return countryName;
     }
 
     /**
@@ -56,9 +69,11 @@ public class CountryCodeConverter {
      * @param country the name of the country
      * @return the 3-letter code of the country
      */
+
+    // We are assuming that countries will be entered as we are given for example "Niger (the)"
     public String fromCountry(String country) {
-        this.countryName = country;
-        return country;
+        String countryName = countryCode.get(country);
+        return countryName;
     }
 
     /**
@@ -66,7 +81,6 @@ public class CountryCodeConverter {
      * @return how many countries are included in this code converter.
      */
     public int getNumCountries() {
-        this.numCountries = this.codeName.split("\\.").length;
-        return 0;
+        return reverseMap.size();
     }
 }
