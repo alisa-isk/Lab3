@@ -26,7 +26,6 @@ public class Main {
         //            you can use it here instead of the InLabByHandTranslator
         //            to try out the whole program!
         Translator translator = new JSONTranslator();
-        //Translator translator = new InLabByHandTranslator();
 
         runProgram(translator);
     }
